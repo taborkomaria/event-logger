@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/util
+        http://www.springframework.org/schema/util/spring-util-3.2.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-3.2.xsd"
+
+>
+
+   <!-- <import resource="others.xml"/>-->
+    <!--<bean id="event" class="Event" scope="prototype">
+        <constructor-arg
+                value="#{new java.util.Date()}"
+        />
+        <constructor-arg value="#{T(java.text.DateFormat).getDateTimeInstance()}"  />-->
+        <!--<bean class="java.text.DateFormat" factory-method="getDateTimeInstance" />-->
+    <!--</bean>-->
+
+    <import resource="loggers.xml"/>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:client.properties</value>
+            </list>
+        </property>
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+
+    </bean>
+    <bean id="client" class="Client" p:greetings="${greeting}">
+        <constructor-arg value="${id}"/>
+        <constructor-arg value="${name}"/>
+        <!--<property name="greetings" value="$greetings"/>-->
+        <!--<constructor-arg index="0" value="1"/>
+        <constructor-arg index="1" value="John"/>-->
+    </bean>
+
+    <util:map id="loggerMap">
+        <entry key="INFO" value-ref="consoleLogger" />
+        <entry key="ERROR" value-ref="combineLogger" />
+    </util:map>
+
+    <bean id="app" class="App">
+        <constructor-arg ref="client"/>
+        <constructor-arg ref="cacheLogger"/>
+        <constructor-arg ref="loggerMap"/>
+
+        <!-- before util:map -->
+        <!--<constructor-arg>
+            <map>
+                <entry key="INFO" value-ref="consoleLogger"/>
+                <entry key="ERROR" value-ref="combineLogger"/>
+            </map>
+        </constructor-arg>-->
+    </bean>
+
+    <bean id="event" class="Event" scope="prototype">
+        <constructor-arg>
+            <bean class="java.util.Date" />
+        </constructor-arg>
+        <constructor-arg ref="dateFormat" />
+    </bean>
+
+    <bean id="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance" />
+
+    <!--<aop:aspectj-autoproxy/>
+    <bean id="loggingAspect" class="LoggingAspect"/>-->
+
+    <!--<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <constructor-arg ref="dataSource" />
+    </bean>-->
+</beans>

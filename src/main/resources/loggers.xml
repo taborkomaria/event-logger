@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="consoleLogger" class="ConsoleEventLogger" />
+    <bean id="fileLogger" class="FileEventLogger" init-method="init">
+        <constructor-arg value="log.txt"/>
+    </bean>
+    <bean id="cacheLogger" class="CacheFileEventLogger" parent="fileLogger" destroy-method="destroy">
+        <constructor-arg value="10"/>
+    </bean>
+    <bean id="combineLogger" class="CombinedEventLogger">
+        <constructor-arg>
+            <list>
+                <ref bean="consoleLogger"/>
+                <ref bean="fileLogger"/>
+            </list>
+        </constructor-arg>
+    </bean>
+</beans>

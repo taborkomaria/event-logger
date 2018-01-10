@@ -1,0 +1,4 @@
+/*@Aspect
+public class LoggingAspect {
+}
+*/
